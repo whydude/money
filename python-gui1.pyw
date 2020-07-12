@@ -6,6 +6,7 @@ from tkinter import *
 from datetime import *
 import json
 import os
+import os.path
 
 
 #####function
@@ -14,34 +15,39 @@ def check_name():
 		f = open("name.txt", "r", encoding="utf-8")
 		return f.read()
 	except FileNotFoundError:
-		f = open("name.txt", "w", encoding="utf-8") 
-		name = simpledialog.askstring('กรอกข้อมูล','ใส่ชื่อของคุณ',parent=GUI)
+		f = open("name.txt", "w", encoding="utf-8")
+		namegui = Tk() 
+		namegui.withdraw()
+		name = simpledialog.askstring('กรอกข้อมูล','ใส่ชื่อของคุณ',parent=namegui)
 		f.write(name)
+		namegui.destroy()
 		return name
 
-def default_config():
-	return 	{
+default_config = {
 	'buttom_color':'red',
 	'background_color':'white',
 	'font_name':'Cordia New'
 	}
 
+
 def update_config():
+
 	try:
 		global config
-		f = open('config.json','r', encoding='utf-8', errors='ignore')
+		f = open('config.json','r+', encoding='utf-8', errors='ignore')
 		config = json.load(f)
-		# Do something with the file
 
-		global bg_color_buttom,bg_color,font_name
-		bg_color = config['background_color']
-		bg_color_buttom = config['buttom_color']
-		font_name = config['font_name']
+	except FileNotFoundError:
+		f = open('config.json','x',encoding='utf-8')
+		json.dump(default_config,f)
+		config = default_config
 
-	except IOError:
-		f = open('config.json','w',encoding='utf-8')
-		json.dump(default_config(),f)
-		update_config()
+
+
+	global bg_color_buttom,bg_color,font_name
+	bg_color = config['background_color']
+	bg_color_buttom = config['buttom_color']
+	font_name = config['font_name']
 
 def write_config(config):
 	os.remove('config.json')
@@ -79,29 +85,25 @@ def Expense(event=None):
 	E1.focus()
 	
 def write_expense_to_csv(ep):
-	try:
-		with open('expensedata.csv','a',newline='',encoding='utf-8') as file:
-			fw = csv.writer(file) #fw = file writer
-			fw.writerow(ep)
-		print(f'รายการ : {ep[0]}')
-		print('wrote data to csv')
-	except FileNotFoundError:
-		f = open('expensedata.csv','w',encoding='utf-8')
-		write_expense_to_csv(ep)
+	with open('expensedata.csv','a',newline='',encoding='utf-8') as file:
+		fw = csv.writer(file) #fw = file writer
+		fw.writerow(ep)
+	print(f'รายการ : {ep[0]}')
+	print('wrote data to csv')
 
 def add_expense_list(data):
 	table_expense.insert('','end',value=data)
 
 def update_expense_table():
-	try:
+	try: 
 		with open('expensedata.csv',newline='',encoding='utf-8') as file:
-			#fr = file reader
 			fr = csv.reader(file)
 			for dt in fr:
 				table_expense.insert('','end',value=dt)
 	except FileNotFoundError:
-		f = open('expensedata.csv','w',encoding='utf-8')
-		update_expense_table
+		f = open('expensedata.csv','x',encoding='utf-8')
+		update_expense_table()
+
 def window():
 	global window_width,window_height
 	window_width = 900
@@ -172,7 +174,6 @@ def preferences(event=None):
 	set_text_entry(bg_color_buttom,p_entry_2)
 	set_text_entry(font_name,p_entry_3)
 
-
 def menubar():
 	menubar = Menu(GUI)
 	GUI.config(menu=menubar)
@@ -186,10 +187,11 @@ def menubar():
 
 
 
+
+
+name = check_name()
+
 update_config()
-
-
-
 
 #####TKINTER
 GUI = Tk()
@@ -197,8 +199,6 @@ GUI = Tk()
 window()
 
 menubar()
-
-name = check_name()
 
 
 #TKFRAME
