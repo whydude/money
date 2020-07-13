@@ -160,6 +160,9 @@ def update_expense_table(zz):
 def FONT(size):
 	return (font_name,size+2)
 
+def FONT_icon(size):
+	return ('icomoon',size)
+
 def set_text_entry(text,e):
 	#setting text into entry for the preference
 	e.delete(0,END)
@@ -435,12 +438,28 @@ def summarize():
 		skip = True
 
 	if not skip:
-		summary_label = Label(frame_side,font=FONT(22),bg=bg_color_side,text=f'คุณมีรายรับ = {total_income} {currency}\nคุณมีรายจ่าย = {total_expense} {currency}\nเงินเหลือ = {total_income-total_expense} {currency}')
-		summary_label.place(x=155,y=20)
+		summary_label = Label(frame_side,font=FONT(24),bg=bg_color_side,text=f'คุณมีรายรับ = {total_income} {currency}\nคุณมีรายจ่าย = {total_expense} {currency}\nเงินเหลือ = {total_income-total_expense} {currency}')
+		summary_label.place(x=120,y=20)
 
-	link1 = Label(frame_side, text="My github", font=FONT(28), fg="red", bg=bg_color_side, cursor="hand2")
-	link1.place(x=185,y=500)
-	link1.bind("<Button-1>", lambda e: callback("https://github.com/whydude"))
+	link_github = Label(frame_side, text="", font=FONT_icon(72), fg="black", bg=bg_color_side, cursor="hand2")
+	link_github.place(x=370,y=550)
+	link_github.bind("<Button-1>", lambda e: callback("https://github.com/whydude"))
+
+	link_youtube = Label(frame_side, text="", font=FONT_icon(72), fg="red", bg=bg_color_side, cursor="hand2")
+	link_youtube.place(x=250,y=550)
+	link_youtube.bind("<Button-1>", lambda e: callback("https://www.youtube.com/channel/UCZnhSGIflv4koejxzDTivmw"))
+
+	link_discord = Label(frame_side, text="", font=FONT_icon(72), fg="#7289DA", bg=bg_color_side, cursor="hand2")
+	link_discord.place(x=130,y=555)
+	link_discord.bind("<Button-1>", lambda e: callbackb("https://discord.gg/vDw2uyU"))
+
+	link_facebook = Label(frame_side, text="", font=FONT_icon(72), fg="#3A559F", bg=bg_color_side, cursor="hand2")
+	link_facebook.place(x=10,y=550)
+	link_facebook.bind("<Button-1>", lambda e: callback("https://www.facebook.com/papangkorn.apinyanon"))
+
+
+
+	print(frame_side.grid_size())
 
 def icon():
 	'''global image
